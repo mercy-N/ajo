@@ -17,6 +17,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password',
+        // 'phone', 'verification_code',
     ];
 
     /**
@@ -39,5 +40,10 @@ class User extends Authenticatable
     public function userGroups()
     {
         return $this->belongsToMany(User::class, 'group_user');
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
     }
 }

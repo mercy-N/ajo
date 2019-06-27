@@ -30,6 +30,18 @@ class RegisterController extends Controller
      */
     protected $redirectTo = '/home';
 
+    // protected function redirectPath()
+    // {
+    //   if (Auth::user()->phone_verified_at == null) {
+    //     return '/verify';
+    //   } else {
+    //     return '/home';
+    //   }
+    // }
+    /**
+    * to display the validation form
+
+    */
     /**
      * Create a new controller instance.
      *
@@ -64,7 +76,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
+            'verification_code' => mt_rand(2345, 4567),
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
