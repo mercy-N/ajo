@@ -27,8 +27,8 @@ public function info(Request $request)
         'lastname' => 'required|string|max:120',
         'dob' => 'required',
         'bvn' => 'required|numeric|unique:users',
-        'email' => 'email|string|unique:users|required',
-        'phone' => 'required|string|unique:users|max:120',
+        'email' => 'email|unique:users|required',
+        'phone_number' => 'required|string|unique:users,phone|max:120',
         'password' => 'required|string|max:120|confirmed',
     ]);
     $user = new User;

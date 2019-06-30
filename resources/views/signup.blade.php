@@ -8,6 +8,7 @@
                 <div class="card-header">{{ __('signup') }}</div>
 
                 <div class="card-body">
+                {{ session('error')}}
                     <form method="POST" action="{{ route('signup') }}">
                         @csrf
 
@@ -114,7 +115,7 @@
                             <div class="col-md-6">
                                 <input id="password" type="text" class="form-control @error('password') is-invalid @enderror" name="password" value="{{ old('password') }}" autofocus>
 
-                                @error('Password')
+                                @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

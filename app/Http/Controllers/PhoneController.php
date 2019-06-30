@@ -49,7 +49,7 @@ class PhoneController extends Controller
         $phone->verification_code = mt_rand(1000, 9999);
         if($phone->save()){
             // dd([$request->phone_number, $phone->verification_code]);
-            $send = file_get_contents("http://www.smsmobile24.com/index.php?option=com_spc&comm=spc_api&username=mercyN&password=vQtXTSPCTZTd2dZ&sender=".urlencode("ajo")."&recipient=".urlencode($request->phone_number)."&message=".$phone->verification_code."&");
+            // $send = file_get_contents("http://www.smsmobile24.com/index.php?option=com_spc&comm=spc_api&username=mercyN&password=vQtXTSPCTZTd2dZ&sender=".urlencode("ajo")."&recipient=".urlencode($request->phone_number)."&message=".$phone->verification_code."&");
 
             return redirect('verify')->with('status', $phone->verification_code);
         }else{
