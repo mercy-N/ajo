@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Auth;
+use App\Phone;
 use App\Profile;
 use Illuminate\Http\Request;
 
@@ -16,19 +17,28 @@ class ProfileController extends Controller
      */
     public function index($phone_number)
     {
-
+        if(Auth::check()){
+            return redirect('/home');
+        }
         return view('signup')->with('phone_number', $phone_number);
     }
 
 public function info(Request $request)
 {
+    $phone = Phone::where('phone_number', $request->phone_number)
+    ->whereNotNull('verified_at')->first();
+
+    if($phone == null){
+        return redirect('register');
+    }
+
     $info = $request->validate([
-        'firstname' => 'required|string|max:120',
+        'firstname' => 'required|string|max:120|min:2',
         'lastname' => 'required|string|max:120',
         'dob' => 'required',
         'bvn' => 'required|numeric|unique:users',
-        'email' => 'email|string|unique:users|required',
-        'phone' => 'required|string|unique:users|max:120',
+        'email' => 'email|unique:users|required',
+        'phone_number' => 'required|string|unique:users,phone|max:120',
         'password' => 'required|string|max:120|confirmed',
     ]);
     $user = new User;
@@ -42,10 +52,15 @@ public function info(Request $request)
     $user->verification_code = '3';
 
     if($user->save()){
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'phone', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect('home');
+            if(session('code')){
+                return redirect('/join/'.session('code'));
+            }else{
+                return redirect('/home');
+            }
+
         }
 
 

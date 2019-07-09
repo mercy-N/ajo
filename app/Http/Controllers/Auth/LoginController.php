@@ -28,7 +28,7 @@ class LoginController extends Controller
     protected $redirectTo = '/home';
 
 
-    // protected $phone;
+    protected $phone;
     /**
      * Create a new controller instance.
      *
@@ -37,22 +37,23 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        // $this->phone = $this->findPhone();
+        $this->phone = $this->findPhone();
     }
     /**
     * Get phone to be used by controller
-    // */
-    // public function findPhone()
-    // {
-    //     $login = request()->input('login');
-    //     $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-    //     return $fieldType;
-    // }
-    // /**
-    // * get phone prop
-    // */
-    // public function phone()
-    // {
-    //     return $this->phone;
-    // }
+    */
+    public function findPhone()
+    {
+        $login = request()->input('login');
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+        request()->merge([$fieldType => $login]);
+        return $fieldType;
+    }
+    /**
+    * get phone prop
+    */
+    public function phone()
+    {
+        return $this->phone;
+    }
 }

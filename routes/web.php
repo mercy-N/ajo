@@ -20,24 +20,45 @@ Route::get('/verify', 'VerifyController@index');
 Route::post('/verify', 'VerifyController@verify')->name('verifyotp');
 Route::get('/signup/{phone_number}', 'ProfileController@index')->name('signup.phone_number');
 Route::post('/signup', 'ProfileController@info')->name('signup');
+
+//this is for the phone controller and view.
 Route::get('/register', 'PhoneController@create')->name('register');
 Route::post('/register', 'PhoneController@store')->name('register.store');
 
-
+// route for profile
 Route::get('/account', 'AccountController@index')->name('account');
-Route::get('/edit', 'UserController@index')->name('edit');
-Route::post('/edit', 'AccountController@update')->name('edit');
+Route::get('/edit', 'AccountController@show')->name('edit');
+Route::post('/edit', 'AccountController@update')->name('update');
+
+// route to groups
+Route::get('/groups', 'GroupController@index')->name('groups');
+Route::get('/createGroup', 'GroupController@create')->name('createGroup');
+Route::post('/createGroup', 'GroupController@store')->name('createGroupPost');
+// Route::resource('/group', 'GroupController');
+
+// route to change password
+Route::get('/changePassword', 'PasswordController@Form');
+Route::post('/changePassword','PasswordController@changePassword')->name('changePassword');
+
+// route to bank details
+Route::get('/bankinfo', 'BankController@index')->name('bankinfo');
+Route::post('/bankinfo', 'BankController@store')->name('bankinfo');
 
 
+// route to card details
+Route::get('/cardCreate', 'UserController@cardCreate')->name('cardCreate');
 
 
+// invite route
+Route::get('/invite', 'InviteController@index')->name('invite');
+Route::get('/join/{code}', 'InviteController@join')->name('invite.join');
 
+// payment route
+Route::post('/pay', 'PaymentController@redirectToGateway')->name('pay');
+Route::get('/payment/callback', 'PaymentController@handleGatewayCallback');
 
-
-
-
-
-
+// transaction route
+Route::get('/transaction', 'TransactionController@index')->name('transaction');
 
 Route::get('/phone', function() {
     return view('phoneno');

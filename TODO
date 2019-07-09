@@ -1,0 +1,55 @@
+- Invite
+create a form to accept phone number
+generate a random invite code
+generate a url with the invitee_phonenumber, code and inviter
+send a text to the invited
+
+
+- when the invite code is used or the link followed
+
+check that the code is correct if user exists
+
+then populate the referral part and join group
+
+
+crediting someone
+on debit successful
+check the last person credited on the cycle table;
+add the person's number by one
+check on the group_user table to get the person with that order number
+initiate a credit on that person's account
+
+debiting everyone
+on the date 30th
+checks the amount for the group
+creates a charge with paystack against the amount to your account
+store on transaction table
+
+if trans==debit&&successful
+debit table => transaction_id
+
+run a query to check the month and the individuals in a group that have been debitted successfully run a query on the group_user to get those who have not been debited .. continue this till the thing is done.
+
+
+transaction table
+
+store authorization on bank table
+
+
+
+checks that everyone has been debitted
+debit=successful
+
+credit table
+- group
+- json
+debit table
+establish the relationship between the groups
+there is a date of payment set
+there is a table to show the people that have been debited
+
+
+
+cycle
+
+

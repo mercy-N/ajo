@@ -46,4 +46,18 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
+
+    public function bank()
+    {
+        return $this->belongsToMany(Bank::class);
+    }
+
+    public function card()
+    {
+        return $this->belongsToMany(Card::class);
+    }
+    public function group()
+    {
+        return $this->belongsToMany(Group::class, 'group_users');
+    }
 }

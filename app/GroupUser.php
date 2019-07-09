@@ -8,7 +8,7 @@ use App\User;
 
 class GroupUser extends Model
 {
-    protected $table = "group_user";
+    protected $table = "group_users";
 
     public function user()
     {
@@ -18,4 +18,6 @@ class GroupUser extends Model
     {
         return $this->belongsTo(Group::class);
     }
+
+
 }

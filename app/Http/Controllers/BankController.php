@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\BankName;
 use App\Bank;
+use Validate;
 use Illuminate\Http\Request;
 
 class BankController extends Controller
@@ -14,7 +16,8 @@ class BankController extends Controller
      */
     public function index()
     {
-        //
+        $bankname = BankName::get();
+        return view('internals.bankinfo')->with('bankme', $bankname);
     }
 
     /**
@@ -35,7 +38,27 @@ class BankController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $bank = $request->validate([
+            'bank_name' => 'required',
+            'account_name' => 'required|string|max:120',
+            'account_no' => 'required|numeric|unique:banks',
+        ]);
+        // dd($bank);
+
+        $bank = new Bank;
+
+        $bank->bank_name_id = $request->bank_name;
+        $bank->account_name = $request->account_name;
+        $bank->account_no = $request->account_no;
+        $bank->user_id = auth()->user()->id;
+
+       if($bank->save()){
+        return redirect()->back()->with('success', 'Bank account has been added');
+
+       } else{
+        return redirect()->back()->with('error', 'something went wrong, Try again');
+       }
+
     }
 
     /**

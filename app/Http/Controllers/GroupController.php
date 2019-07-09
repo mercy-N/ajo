@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Group;
+use Auth;
+use App\GroupUser;
+use App\User;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -14,9 +17,17 @@ class GroupController extends Controller
      */
     public function index()
     {
-        //
+        $groups = Group::all();
+        $user = User::findOrFail(auth()->user()->id);
+        return view('internals.groups')->with(['groups'=> $groups, 'users'=>$user]);
     }
 
+    public function getOrder($group, $user){
+        return GroupUser::get()
+        ->where('user_id', $user)
+        ->where('group_id', $group);
+
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -24,7 +35,9 @@ class GroupController extends Controller
      */
     public function create()
     {
-        //
+        return view('internals.createGroup');
+
+
     }
 
     /**
@@ -35,7 +48,32 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $group = $request->validate([
+            'name'=>'string|required|max:120',
+            'no_of_users'=>'required',
+            'amount'=>'required|numeric',
+        ]);
+        $group = new Group;
+        $group->name = $request->name;
+        $group->no_of_users = $request->no_of_users;
+        $group->amount = $request->amount;
+        $group->cycle = 0;
+        $group->is_active = 1;
+        if($group->save()){
+            $group_user = new GroupUser;
+            $group_user->group_id = $group->id;
+            $group_user->user_id = auth()->user()->id;
+            $group_user->is_admin = true;
+            $group_user->order_of_members = rand(1, $group->no_of_users);
+            if($group_user->save()){
+                return redirect()->back()->with('success', 'Group created succcessfully');
+            }else{
+                return redirect()->back()->with('error', 'Something went wrong, please try again');
+            }
+        }else{
+            return redirect()->back()->with('error', 'Something went wrong, please try again!');
+        }
+        return redirect()->back()->with('error', 'You tried');
     }
 
     /**
@@ -47,6 +85,24 @@ class GroupController extends Controller
     public function show(Group $group)
     {
         //
+    }
+    public function joinGroup(Request $request)
+    {
+        //check for group ; check for user ; assuming user exists ; tie group to user;
+        $group = Group::findOrFail($request->group);
+        // $user = User::findOrFail($request->user);
+        $groupuser = new GroupUser;
+
+        $groupuser->user_id = $request->user;
+        $groupuser->group_id = $request->group;
+        $groupuser->is_admin = false;
+        $groupuser->order_of_members = rand(1, $group->no_of_users);
+
+        if($groupuser->save()){
+            return redirect()->back()->with('success', 'You have Join this group');
+        }else{
+            return redirect()->back()->with('error', 'You could not Join this group');
+        }
     }
 
     /**

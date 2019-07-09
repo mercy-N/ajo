@@ -19,6 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('group_id')->index()->unsigned();
             $table->string('reference');
             $table->string('status');
+            $table->string('type');
             $table->float('amount');
             $table->timestamps();
         });

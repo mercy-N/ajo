@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+
+    public function cardCreate()
     {
-        return view('internals.edit');
+        return view('internals.cardCreate');
     }
-
-
 }
