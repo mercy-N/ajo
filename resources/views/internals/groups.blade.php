@@ -14,7 +14,8 @@
       <div class="card-header">
         <ul class="nav nav-pills card-header-pills">
           <li class="nav-item">
-            <a class="nav-link active" href="#">{{ $group->name }}</a>
+            <a class="nav-link active" href="#">{{ $group->name }}</a><br>
+            <a class="btn btn-primary" href=" {{ route('searchPhone', ['group'=> $group->id]) }} ">Add Member</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#"> {{ $group->order_number }} </a>

@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use Auth;
+use Blade;
 use App\GroupUser;
 use App\User;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
+    public function __construct()
+    {
+        //
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,8 +22,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $groups = Group::all();
         $user = User::findOrFail(auth()->user()->id);
+        $groups = $user->group()->get();
         return view('internals.groups')->with(['groups'=> $groups, 'users'=>$user]);
     }
 
@@ -103,6 +108,30 @@ class GroupController extends Controller
         }else{
             return redirect()->back()->with('error', 'You could not Join this group');
         }
+    }
+
+
+    public function searchPhone(Request $request, $group)
+    {
+        Blade::if('phonefound', function(){
+            return session('phonefound');
+        });
+        return view('internals.searchPhone')->with('group', $group);
+    }
+
+    public function searchPhoneNumber(Request $request)
+    {
+
+        $user = User::where('phone', $request->phone)
+        ->whereNotIn('phone', [auth()->user()->phone])
+        ->first();
+        if($user == null){
+            $url = "send invite";
+            $user = $request->phone;
+        }else{
+            $url = "add to group";
+        }
+        return redirect()->back()->with(['phonefound'=>true, 'status'=>$url, 'userPhone'=>$user]);
     }
 
     /**

@@ -34,6 +34,9 @@ Route::post('/edit', 'AccountController@update')->name('update');
 Route::get('/groups', 'GroupController@index')->name('groups');
 Route::get('/createGroup', 'GroupController@create')->name('createGroup');
 Route::post('/createGroup', 'GroupController@store')->name('createGroupPost');
+Route::get('/addMember', 'GroupController@addMember')->name('addMember');
+Route::get('/searchPhone/{group}', 'GroupController@searchPhone')->name('searchPhone');
+Route::post('/searchPhone', 'GroupController@searchPhoneNumber')->name('searchPhoneNumber');
 // Route::resource('/group', 'GroupController');
 
 // route to change password
@@ -59,6 +62,10 @@ Route::get('/payment/callback', 'PaymentController@handleGatewayCallback');
 
 // transaction route
 Route::get('/transaction', 'TransactionController@index')->name('transaction');
+
+// ajax
+Route::get('/get-group/{groupId}', 'HomeController@getGroupUsers');
+Route::get('/get-first-group', 'HomeController@getFirstGroup');
 
 Route::get('/phone', function() {
     return view('phoneno');

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row">
         <div class="col-md-3">
@@ -46,43 +47,36 @@
                 <div class="col-md-6">
                     <div class="card" style="height:20rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Group 1 Summary</h5>
+                            <h5 class="card-title" id="c-title"></h5>
                                 <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                                    <button class="dropbtn" onclick="myFunction()">Select Group
                                       </button>
-                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="#">group 2</a>
-                                        <a class="dropdown-item" href="#">group 3</a>
-                                        <a class="dropdown-item" href="#">group 4</a>
+
+                                      <div id="myDropdown" class="dropdown-content">
+                                        <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+
+                                        @foreach ($groups as $group)
+                                        <a class="dropdown-item" href="#" onclick="getGroup({{ $group->id}});"> {{ $group->name }} </a>
+                                            @endforeach
+
                                       </div>
                                 </div>
-                                <p class="card-text">Savings Plan    50,000</p>
-                                <p class="card-text">Number of members     6</p>
-                                <p class="card-text">Total amount paid to members   </p>
+                                <p class="card-text" id="amount"></p>
+                                <p class="card-text" id="no_of_users"></p>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="col-md-6">
                     <div class="card" style="height:20rem;">
                        <div class="card-body">
                            <div class="card-body">
                                <h5 class="card-title">Order of group members </h5>
-                                   <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      </button>
-                                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="#">group 2</a>
-                                        <a class="dropdown-item" href="#">group 3</a>
-                                        <a class="dropdown-item" href="#">group 4</a>
-                                      </div>
-                                    <p class="card-text">Ada N</p>
-                                    <p class="card-text">Michael C</p>
-                                    <p class="card-text">Mercy N</p>
-                                    <p class="card-text">Schneider K</p>
-                                    <p class="card-text">Joy J</p>
+                                    <ul class="card-text user-group"></ul>
 
-                           </div>
+
                        </div>
                     </div>
                 </div>
@@ -135,3 +129,67 @@
     </div>
 </div>
 @endsection
+@section('script')
+<script type="text/javascript">
+  function getGroup(groupId){
+    $.ajax({
+      url: 'get-group/'+groupId,
+      method: 'GET',
+      success: (data)=>{
+        console.log(data);
+        for(i=0, users = ""; i < data[0].length; i++){
+          users += '<li>'+data[0][i].firstname+ ' ' +data[0][i].lastname+'</li>';
+        }
+        $('.user-group').html(users);
+        $('#c-title').text(data[1].name+' Summary');
+        $('#amount').text(data[1].amount);
+        $('#no_of_users').text(data[1].no_of_users);
+
+
+
+      }
+    });
+  }
+
+
+  function myFunction() {
+  document.getElementById("myDropdown").classList.toggle("show");
+}
+
+function filterFunction() {
+  var input, filter, ul, li, a, i;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  div = document.getElementById("myDropdown");
+  a = div.getElementsByTagName("a");
+  for (i = 0; i < a.length; i++) {
+    txtValue = a[i].textContent || a[i].innerText;
+    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+      a[i].style.display = "";
+    } else {
+      a[i].style.display = "none";
+    }
+  }
+}
+document.onreadystatechange = ()=>{
+    if(document.readyState === "complete"){
+      $.ajax({
+        url: 'get-first-group/',
+        method: 'GET',
+        success: (data)=>{
+          console.log(data);
+          for(i=0, users = ""; i < data[0].length; i++){
+            users += '<li>'+data[0][i].firstname+ ' ' +data[0][i].lastname+'</li>';
+          }
+        $('.user-group').html(users);
+        $('#c-title').text(data[1].name+' Summary');
+        $('#amount').text(data[1].amount);
+        $('#no_of_users').text(data[1].no_of_users);
+      }
+    });
+    }
+
+  }
+</script>
+@endsection
+
