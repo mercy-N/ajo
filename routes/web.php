@@ -54,6 +54,7 @@ Route::get('/cardCreate', 'UserController@cardCreate')->name('cardCreate');
 
 // invite route
 Route::get('/invite', 'InviteController@index')->name('invite');
+Route::post('/invite', 'InviteController@sendInvite')->name('invite.send');
 Route::get('/join/{code}', 'InviteController@join')->name('invite.join');
 
 // payment route
@@ -66,6 +67,9 @@ Route::get('/transaction', 'TransactionController@index')->name('transaction');
 // ajax
 Route::get('/get-group/{groupId}', 'HomeController@getGroupUsers');
 Route::get('/get-first-group', 'HomeController@getFirstGroup');
+
+Route::post('/addGroupRequest', 'GroupController@addGroupRequest');
+Route::get('/addGroupAccept/{requestId} ', 'GroupController@addGroupAccept');
 
 Route::get('/phone', function() {
     return view('phoneno');

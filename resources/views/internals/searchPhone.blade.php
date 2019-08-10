@@ -40,10 +40,17 @@
                       @phonefound
                         @if(isset(session('userPhone')->phone))
                           {{ session('userPhone')->phone }}
-                          <button class="btn btn-primary">{{ session('status') }}</button>
+                          <form action="/addGroupRequest" method="POST" id="a">
+                            @csrf
+                            <input type="hidden" value=" {{ session('userPhone')->phone }} " name="phone" id="aPhone">
+                            <button id="addGroup" class="btn btn-primary">{{ session('status') }}</button>
+                          </form>
                         @else
                           {{ session('userPhone') }}
-                          <button class="btn btn-primary">{{ session('status') }}</button>
+                          <form>
+                          <input type="hidden" name="phone" id="iPhone" value="{{ session('userPhone') }} ">
+                          <button id="inviteGroup" class="btn btn-primary">{{ session('status') }}</button>
+                          </form>
                         @endif
                       @endphonefound
 
@@ -55,4 +62,53 @@
 </div>
 
 
+@endsection
+@section('script')
+<script type="text/javascript">
+$('#inviteGroup').click(()=>{
+  $.ajax({
+    url: 'invite/',
+    method: 'POST',
+    success: (data)=>{
+      // if()
+    }
+  })
+  // console.log($('#iPhone').val());
+  //take this to the invite function
+  //if returns true
+  //drop a notice that the user has been invited
+  //else
+  //drop a notice that the user has not been invited
+});
+$('#addGroup').click((e)=>{
+  e.preventDefault();
+  var phoneData = $('#aPhone').val();
+  var group = {{ $group }};
+  console.log(group);
+  $.ajax({
+    url: '/addGroupRequest',
+    method: 'POST',
+    data: {'_token': "{{ csrf_token() }}", 'phone': phoneData, 'group': group},
+    success: (data)=>{
+    switch(data){
+      case 'already':
+      alert('tell the fool to accept');
+      break;
+      case 'done':
+      alert('request has been sent');
+      break;
+      default:
+      alert('request could not be sent');
+    }
+      }
+
+  });
+  // console.log($('#aPhone').val());
+  //take this to the add to group function
+  //if returns true
+  //drop a notice that the user has been added
+  //else
+  //drop a notice that the user has not been added
+});
+</script>
 @endsection

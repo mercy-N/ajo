@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Group;
 use Auth;
 use Blade;
+use DB;
 use App\GroupUser;
 use App\User;
 use Illuminate\Http\Request;
@@ -132,6 +133,102 @@ class GroupController extends Controller
             $url = "add to group";
         }
         return redirect()->back()->with(['phonefound'=>true, 'status'=>$url, 'userPhone'=>$user]);
+    }
+/**
+* creates a request and sends to the user
+*/
+public function addGroupRequest(Request $request)
+{
+    if($this->checkRequest($request->group, $request->phone)){
+        return 'already';
+    }{
+        $user = User::where('phone', $request->phone)->first();
+        $addGroup = DB::table('request')->insert([
+          'sender' => auth()->user()->id,
+          'receiver' => $request->phone,
+          'group_id' => $request->group,
+          'status' => 0,
+        ]);
+        if($addGroup){
+            return 'done';
+        }else{
+            return 'failed';
+        }
+    }
+
+}
+
+public function checkRequest($group, $receiver)
+{
+    $checkRequest = DB::table('request')
+    ->where('group_id', $group)
+    ->where('receiver', $receiver)
+    ->first();
+    if($checkRequest == null){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+/**
+* Adds the user to the group when the user
+* has accepted an invite to join a group
+*/
+public function addGroupAccept($requestId)
+{
+    //get the request id
+    // query the request
+    //update the status to true
+    // create a group_user detail
+    $addGroupAccept = DB::table('request')
+    ->where('id', $requestId);
+    if($addGroupAccept->first() != null){
+        $addGroupAccept->update(['status' => true]);
+    }
+
+    if($this->joinGroupToo($addGroupAccept->first())){
+        return redirect()->back()->with('success', 'You have Join this group');
+    }else{
+        return redirect()->back()->with('error', 'You could not Join this group');
+    }
+}
+    public function joinGroupToo($request)
+    {
+        // dd($request);
+
+        //check for group ; check for user ; assuming user exists ; tie group to user;
+        $group = Group::findOrFail($request->group_id);
+        $life = $this->checkMemberOrder($group->no_of_users, $request->group_id);
+        // dd($life);
+        // $user = User::findOrFail($request->user);
+        $groupuser = new GroupUser;
+        // $this->checkMemberOrder($groupy)
+        $user = User::where('phone', $request->receiver)->first();
+        $groupuser->user_id = $user->id;
+        $groupuser->group_id = $request->group_id;
+        $groupuser->is_admin = false;
+        $groupuser->order_of_members = 4;
+
+        $groupuser->save();
+
+
+    }
+
+    public function checkMemberOrder($max, $gid)
+    {
+        $order = rand(1, $max);
+
+        $groupuser = new GroupUser;
+        $grouporder = $groupuser->where('group_id', $gid)
+        ->where('order_of_members', $order)
+        ->exists();
+        if ($grouporder){
+            return $this->checkMemberOrder($max, $gid);
+        }else{
+            return $order;
+        }
+
     }
 
     /**

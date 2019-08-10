@@ -40,7 +40,24 @@ class InviteController extends Controller
 
         return view('internals.invite')->with('referral_link', $link);
     }
+    public function sendInvite(Request $request)
+    {
+        $info = $request->validate([
+           'phone_number' => 'required|string|max:120',
+        ]);
 
+        $invite = new Invite;
+        $invite->user_id = auth()->user()->id;
+        if($request->group_id){
+            $invite->group_id = $request->group_id;
+        }else{
+            $invite->group_id = 0;
+        }
+        $invite->phone = $request->phone_number;
+        $invite->url = auth()->user()->referral_link;
+        $invite->status = 'sent';
+        $invite->save();
+    }
     public function generateRandomString($length = 4) {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
