@@ -183,6 +183,7 @@ public function addGroupAccept($requestId)
     // create a group_user detail
     $addGroupAccept = DB::table('request')
     ->where('id', $requestId);
+
     if($addGroupAccept->first() != null){
         $addGroupAccept->update(['status' => true]);
     }
@@ -199,34 +200,64 @@ public function addGroupAccept($requestId)
 
         //check for group ; check for user ; assuming user exists ; tie group to user;
         $group = Group::findOrFail($request->group_id);
-        $life = $this->checkMemberOrder($group->no_of_users, $request->group_id);
+        $life = $this->randomOrder($group->no_of_users, $request->group_id);
         // dd($life);
         // $user = User::findOrFail($request->user);
         $groupuser = new GroupUser;
         // $this->checkMemberOrder($groupy)
         $user = User::where('phone', $request->receiver)->first();
+        if($groupuser->where('user_id', $user->id)->where('group_id', $group->id)->exists()){
+            return redirect()->back()->with('error', 'You are alreday in the group');
+        }
         $groupuser->user_id = $user->id;
         $groupuser->group_id = $request->group_id;
         $groupuser->is_admin = false;
-        $groupuser->order_of_members = 4;
+        $groupuser->order_of_members = $life;
 
-        $groupuser->save();
+        return $groupuser->save();
 
 
     }
 
-    public function checkMemberOrder($max, $gid)
+    public function randomOrder($max, $groupId)
     {
+        $maxValues = [];
+        for ($x = 1; $x <= $max; $x++) {
+            $maxValues[] = $x;
+        }
         $order = rand(1, $max);
+        $life = $this->checkMemberOrder($order, $max, $groupId, $maxValues);
+        return $life;
+    }
 
-        $groupuser = new GroupUser;
-        $grouporder = $groupuser->where('group_id', $gid)
-        ->where('order_of_members', $order)
-        ->exists();
-        if ($grouporder){
-            return $this->checkMemberOrder($max, $gid);
+
+    public function checkMemberOrder($order, $max, $gid, $maxValues)
+    {
+        $countMembers = GroupUser::where('group_id', $gid)->count();
+        if($countMembers == $max){
+            dd('cant join');
         }else{
-            return $order;
+
+            // dd('can');
+            $getAvailableNumber = GroupUser::where('group_id', $gid)->whereIn('order_of_members', $maxValues)->pluck('order_of_members')->toArray();
+            // dd($getAvailableNumber);
+            $array1 = $getAvailableNumber;
+            $array2 = $maxValues;
+            $diff_result = array_diff($array2, $array1);
+            $availableOrderNumber = (array_flatten($diff_result));
+        }
+
+
+        // $grouporder = GroupUser::where('group_id', $gid)
+        // ->where('order_of_members', $order)
+        // ->exists();
+        // $groupuser = new GroupUser;
+        // dd($grouporder);
+
+        if ($availableOrderNumber){
+            return $availableOrderNumber[0];
+        }else{
+            die('no space available');
         }
 
     }
@@ -263,5 +294,13 @@ public function addGroupAccept($requestId)
     public function destroy(Group $group)
     {
         //
+    }
+    // check to see if the user exists in a group
+    public function checkGroupUserExists($request){
+        $request=$request->first();
+        $user = User::where('phone', $request->receiver)->first();
+        $group = GroupUser::where('user_id', $user->id)->where('group_id', $request->group_id)->first();
+        return $group;
+
     }
 }
