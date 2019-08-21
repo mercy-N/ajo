@@ -66,6 +66,7 @@ class GroupController extends Controller
         $group->amount = $request->amount;
         $group->cycle = 0;
         $group->is_active = 1;
+        $group->slog_link = $this->createGroupLink($request->name);
         if($group->save()){
             $group_user = new GroupUser;
             $group_user->group_id = $group->id;
@@ -82,7 +83,20 @@ class GroupController extends Controller
         }
         return redirect()->back()->with('error', 'You tried');
     }
-
+    /**
+     * 
+     * create the group link 
+     * 
+     * 
+     */
+    public function createGroupLink($groupName)
+    {
+        $invite = new InviteController;
+        $groupArray = explode(" ", $groupName);
+        $groupSlug = implode("_", $groupArray);
+        $slug = $groupSlug.'_'.$invite->generateRandomString();
+        return $slug;
+    }
     /**
      * Display the specified resource.
      *
