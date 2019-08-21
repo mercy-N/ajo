@@ -33,7 +33,7 @@
         </div>
         <div class="row">
             <div class="col-3 pb-3">
-                <a href="">Notifications</a>
+                <a href=" {{ route('notifications') }} ">Notifications</a>
             </div>
         </div>
         <div class="row">
@@ -94,7 +94,7 @@
                                      last 30 days
                                       </button>
                                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="#">group 2</a>
+                                        <a class="dropdown-item" href="#">last 60 days</a>
                                         <a class="dropdown-item" href="#">group 3</a>
                                         <a class="dropdown-item" href="#">group 4</a>
                                       </div>

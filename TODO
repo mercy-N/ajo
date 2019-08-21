@@ -54,3 +54,7 @@ cycle
 
 
 - resend the email and sms if request exist
+
+
+check if members are complete when a new user joins group
+default new user homepage

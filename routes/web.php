@@ -69,7 +69,11 @@ Route::get('/get-group/{groupId}', 'HomeController@getGroupUsers');
 Route::get('/get-first-group', 'HomeController@getFirstGroup');
 
 Route::post('/addGroupRequest', 'GroupController@addGroupRequest');
-Route::get('/addGroupAccept/{requestId} ', 'GroupController@addGroupAccept');
+Route::get('/addGroupAccept/{requestId} ', 'GroupController@addGroupAccept')->name('acceptRequest');
+
+// notifications
+Route:: get('/notifications', 'NotificationsController@index')->name('notifications');
+
 
 Route::get('/phone', function() {
     return view('phoneno');

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Request;
 
 class User extends Authenticatable
 {
@@ -60,4 +61,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Group::class, 'group_users');
     }
+
+    public function reqs()
+    {
+        return $this->hasMany(Request::class, 'sender');
+    }
+
 }

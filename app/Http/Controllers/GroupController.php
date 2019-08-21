@@ -8,6 +8,7 @@ use Blade;
 use DB;
 use App\GroupUser;
 use App\User;
+use App\Request as InviteRequest;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -95,8 +96,8 @@ class GroupController extends Controller
     public function joinGroup(Request $request)
     {
         //check for group ; check for user ; assuming user exists ; tie group to user;
+
         $group = Group::findOrFail($request->group);
-        // $user = User::findOrFail($request->user);
         $groupuser = new GroupUser;
 
         $groupuser->user_id = $request->user;
@@ -105,7 +106,7 @@ class GroupController extends Controller
         $groupuser->order_of_members = rand(1, $group->no_of_users);
 
         if($groupuser->save()){
-            return redirect()->back()->with('success', 'You have Join this group');
+            return redirect()->back()->with('success', 'You have Joined this group');
         }else{
             return redirect()->back()->with('error', 'You could not Join this group');
         }
@@ -134,16 +135,18 @@ class GroupController extends Controller
         }
         return redirect()->back()->with(['phonefound'=>true, 'status'=>$url, 'userPhone'=>$user]);
     }
+
 /**
 * creates a request and sends to the user
 */
+
 public function addGroupRequest(Request $request)
 {
     if($this->checkRequest($request->group, $request->phone)){
         return 'already';
     }{
         $user = User::where('phone', $request->phone)->first();
-        $addGroup = DB::table('request')->insert([
+        $addGroup = DB::table('requests')->insert([
           'sender' => auth()->user()->id,
           'receiver' => $request->phone,
           'group_id' => $request->group,
@@ -160,7 +163,7 @@ public function addGroupRequest(Request $request)
 
 public function checkRequest($group, $receiver)
 {
-    $checkRequest = DB::table('request')
+    $checkRequest = DB::table('requests')
     ->where('group_id', $group)
     ->where('receiver', $receiver)
     ->first();
@@ -181,41 +184,43 @@ public function addGroupAccept($requestId)
     // query the request
     //update the status to true
     // create a group_user detail
-    $addGroupAccept = DB::table('request')
-    ->where('id', $requestId);
 
-    if($addGroupAccept->first() != null){
-        $addGroupAccept->update(['status' => true]);
+    $addGroupAccept = InviteRequest::where('id', $requestId)->first();
+
+
+    if($addGroupAccept != null){
+        $addGroupAccept->status = true;
+        $addGroupAccept->save();
     }
 
-    if($this->joinGroupToo($addGroupAccept->first())){
-        return redirect()->back()->with('success', 'You have Join this group');
+    if($this->joinGroupToo($addGroupAccept)){
+
+        return redirect()->back()->with('success', 'Welcome!, happy saving.');
     }else{
-        return redirect()->back()->with('error', 'You could not Join this group');
+
+        return redirect()->back()->with('error', 'Sorry, you could not join this group.');
     }
 }
-    public function joinGroupToo($request)
+    public function joinGroupToo($data)
     {
-        // dd($request);
-
         //check for group ; check for user ; assuming user exists ; tie group to user;
-        $group = Group::findOrFail($request->group_id);
-        $life = $this->randomOrder($group->no_of_users, $request->group_id);
-        // dd($life);
-        // $user = User::findOrFail($request->user);
+
+        $group = Group::findOrFail($data->group_id);
+        $life = $this->randomOrder($group->no_of_users, $data->group_id);
+
         $groupuser = new GroupUser;
-        // $this->checkMemberOrder($groupy)
-        $user = User::where('phone', $request->receiver)->first();
+        $user = User::where('phone', $data->receiver)->first();
         if($groupuser->where('user_id', $user->id)->where('group_id', $group->id)->exists()){
-            return redirect()->back()->with('error', 'You are alreday in the group');
+            return redirect()->back()->with('error', 'You are already a member of this group.');
         }
         $groupuser->user_id = $user->id;
-        $groupuser->group_id = $request->group_id;
+        $groupuser->group_id = $data->group_id;
         $groupuser->is_admin = false;
         $groupuser->order_of_members = $life;
 
-        return $groupuser->save();
+        $groupuser->save();
 
+        return $groupuser;
 
     }
 
@@ -238,21 +243,13 @@ public function addGroupAccept($requestId)
             dd('cant join');
         }else{
 
-            // dd('can');
             $getAvailableNumber = GroupUser::where('group_id', $gid)->whereIn('order_of_members', $maxValues)->pluck('order_of_members')->toArray();
-            // dd($getAvailableNumber);
+
             $array1 = $getAvailableNumber;
             $array2 = $maxValues;
             $diff_result = array_diff($array2, $array1);
             $availableOrderNumber = (array_flatten($diff_result));
         }
-
-
-        // $grouporder = GroupUser::where('group_id', $gid)
-        // ->where('order_of_members', $order)
-        // ->exists();
-        // $groupuser = new GroupUser;
-        // dd($grouporder);
 
         if ($availableOrderNumber){
             return $availableOrderNumber[0];
@@ -295,7 +292,9 @@ public function addGroupAccept($requestId)
     {
         //
     }
+
     // check to see if the user exists in a group
+
     public function checkGroupUserExists($request){
         $request=$request->first();
         $user = User::where('phone', $request->receiver)->first();
@@ -303,4 +302,6 @@ public function addGroupAccept($requestId)
         return $group;
 
     }
+
+
 }
