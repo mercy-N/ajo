@@ -15,7 +15,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('OTP Number') }}</label>
 
                             <div class="col-md-6">
-                                <input type="hidden" name="phone_number" value={{session('status')}}>
+                                <input type="hidden" name="phone_number" value="{{session('status')}}">
                                 <input id="name" type="text" class="form-control @error('phone') is-invalid @enderror" name="verification_code" value="{{ old('verification_code') }}" autocomplete="name" autofocus>
 
                                 <!-- if( session('status')) -->

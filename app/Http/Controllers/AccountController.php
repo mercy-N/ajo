@@ -46,7 +46,7 @@ class AccountController extends Controller
      */
     public function show(Account $account)
     {
-        //
+        return view('internals.edit');
     }
 
     /**
@@ -70,6 +70,19 @@ class AccountController extends Controller
     public function update(Request $request, Account $account)
     {
 
+       // $accountUpdate = $request->validate([
+       //      'phone' => '',
+       //      'email' => '',
+       //      'image' => ''
+       // ]);
+
+       // $accountUpdate =
+
+        // $user = request()->validate([
+        //     'phone' => '',
+        //     'email' => 'email|string|unique:users,'
+        // ]);
+        // auth()->user()->update($user);
     }
 
     /**

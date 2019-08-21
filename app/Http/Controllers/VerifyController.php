@@ -19,8 +19,6 @@ class VerifyController extends Controller
      */
     public function index()
     {
-        //
-        // send the generated code to user
 
         return view('verify');
     }
@@ -38,10 +36,8 @@ class VerifyController extends Controller
 
     public function verify(Request $request)
     {
-        // dd($request->verification_code);
-        //query the db to see if the verification code exists
         $verified = Phone::get()->where('verification_code', $request->verification_code);
-        // User::get()->where('verification_code',$request->verification_code)->where('id', Auth::user()->id);
+
         if($verified->count() == 0){
             return redirect()->back()->with('status', 'verification code is incorrect');
         }else{
@@ -49,7 +45,6 @@ class VerifyController extends Controller
             $phone->verified_at = Carbon::now();
             if($phone->save()){
                 return redirect()->route('signup.phone_number', $phone->phone_number);
-                // return redirect('/signup?phone_number='.$phone->phone_number)->with(['status'=>'Account Verified', 'phone_number'=>$phone->phone_number]);
             }
 
         }

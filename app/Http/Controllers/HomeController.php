@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\User;
+use App\Group;
 class HomeController extends Controller
 {
     /**
@@ -23,6 +24,25 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user = User::find(auth()->user()->id);
+        $groups = $user->group()->get();
+
+        return view('home')->with('groups', $groups);
+
+    }
+    public function getGroupUsers($groupId)
+    {
+        $group = Group::find($groupId);
+        $users = $group->user()->get();
+        // return response()->json($users);
+        return response()->json([$users, $group]);
+    }
+    public function getFirstGroup()
+    {
+        $user = User::find(auth()->user()->id);
+        $group = $user->group()->first();
+        $users = $group->user()->get();
+        // return response()->json($users);
+        return response()->json([$users, $group]);
     }
 }

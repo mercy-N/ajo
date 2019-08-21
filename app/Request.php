@@ -3,21 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Group;
 use App\User;
+use App\Group;
 
-class GroupUser extends Model
+class Request extends Model
 {
-    protected $table = "group_users";
-
-    public function user()
+    public function sendingParty()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'sender', 'id');
     }
+
     public function group()
     {
         return $this->belongsTo(Group::class);
     }
-
-
 }
