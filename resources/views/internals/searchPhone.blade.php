@@ -65,12 +65,17 @@
 @endsection
 @section('script')
 <script type="text/javascript">
-$('#inviteGroup').click(()=>{
+$('#inviteGroup').click((e)=>{
+  e.preventDefault();
+  var idata =  $('#iPhone').val();
+  var groupData = {{ $group }};
   $.ajax({
-    url: 'invite/',
+    url: '/group-invite',
     method: 'POST',
-    success: (data)=>{
-      // if()
+    data: {'_token': "{{ csrf_token()}}", 'phone': idata, 'group': groupData },
+    success: (data)=>{ 
+      console.log(data);
+      alert('done');
     }
   })
   // console.log($('#iPhone').val());

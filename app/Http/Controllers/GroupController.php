@@ -43,8 +43,6 @@ class GroupController extends Controller
     public function create()
     {
         return view('internals.createGroup');
-
-
     }
 
     /**
@@ -66,6 +64,7 @@ class GroupController extends Controller
         $group->amount = $request->amount;
         $group->cycle = 0;
         $group->is_active = 1;
+        $group->slog_link = $this->createGroupLink($request->name);
         if($group->save()){
             $group_user = new GroupUser;
             $group_user->group_id = $group->id;
@@ -82,7 +81,35 @@ class GroupController extends Controller
         }
         return redirect()->back()->with('error', 'You tried');
     }
-
+    /**
+     * 
+     * create the group link 
+     * 
+     * 
+     */
+    public function createGroupLink($groupName)
+    {
+        $invite = new InviteController;
+        $groupArray = explode(" ", $groupName);
+        $groupSlug = implode("_", $groupArray);
+        $slug = strtolower($groupSlug.'_'.$invite->generateRandomString());
+        //get the max number for the forloop
+        // $max = Group::count();
+        // $maxValues = [];
+        // for($i = 1; $i <= $max; $i++){
+        //     $maxValues = Group::pluck('slog_link')->toArray();
+        // } 
+        $check = Group::where('slog_link', $slug)->exists();
+        if(!$check){
+            return $slug;
+        }else{
+            createGroupLink($groupName);
+        }
+        
+        // get the list of names in an array
+        // chck or run slug again
+        // return $slug;
+    }
     /**
      * Display the specified resource.
      *

@@ -8,6 +8,7 @@
                 <div class="card-header">{{ __('signup') }}</div>
 
                 <div class="card-body">
+                {{ session('error')}}
                     <form method="POST" action="{{ route('signup') }}">
                         @csrf
 

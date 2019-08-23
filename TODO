@@ -58,6 +58,11 @@ cycle
 
 check if members are complete when a new user joins group
 default new user homepage
+<<<<<<< HEAD
 allow login with phone number
 rename slug_link to slug on groups table
 
+=======
+get other information like ip, device type, browser type, last login, scary shit...
+update the referral table when the invite is accepted
+>>>>>>> f81e93024f4a784744ae47e58e8a4c60c913d513

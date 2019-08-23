@@ -67,6 +67,7 @@ Route::get('/transaction', 'TransactionController@index')->name('transaction');
 // ajax
 Route::get('/get-group/{groupId}', 'HomeController@getGroupUsers');
 Route::get('/get-first-group', 'HomeController@getFirstGroup');
+Route::post('/group-invite', 'InviteController@inviteGroup');
 
 Route::post('/addGroupRequest', 'GroupController@addGroupRequest');
 Route::get('/addGroupAccept/{requestId} ', 'GroupController@addGroupAccept')->name('acceptRequest');
