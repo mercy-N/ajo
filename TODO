@@ -58,3 +58,6 @@ cycle
 
 check if members are complete when a new user joins group
 default new user homepage
+allow login with phone number
+rename slug_link to slug on groups table
+
