@@ -11,4 +11,8 @@ class UserController extends Controller
     {
         return view('internals.cardCreate');
     }
+    public function createCard()
+    {
+        return view('transaction.saveCard');
+    }
 }

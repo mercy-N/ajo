@@ -50,7 +50,8 @@ Route::post('/bankinfo', 'BankController@store')->name('bankinfo');
 
 // route to card details
 Route::get('/cardCreate', 'UserController@cardCreate')->name('cardCreate');
-
+Route::get('/createcard', 'UserController@createCard')->name('createcard');
+Route::get('/chargecard/{person}', 'PaymentController@chargeCard');
 
 // invite route
 Route::get('/invite', 'InviteController@index')->name('invite');
@@ -76,9 +77,13 @@ Route::get('/addGroupAccept/{requestId} ', 'GroupController@addGroupAccept')->na
 Route:: get('/notifications', 'NotificationsController@index')->name('notifications');
 
 
+
+
+
 Route::get('/phone', function() {
     return view('phoneno');
 });
+
 // Route::resource('verify', 'VerifyController');
 // Route::post('verify', 'VerifyController@validateOtp')->name('verify.otp');
 // Route::get('user/info/{id}', 'VerifyController@userRegister')->name('user.register');
