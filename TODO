@@ -58,3 +58,5 @@ cycle
 
 check if members are complete when a new user joins group
 default new user homepage
+get other information like ip, device type, browser type, last login, scary shit...
+update the referral table when the invite is accepted

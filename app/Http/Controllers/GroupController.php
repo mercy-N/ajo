@@ -43,8 +43,6 @@ class GroupController extends Controller
     public function create()
     {
         return view('internals.createGroup');
-
-
     }
 
     /**
@@ -94,8 +92,23 @@ class GroupController extends Controller
         $invite = new InviteController;
         $groupArray = explode(" ", $groupName);
         $groupSlug = implode("_", $groupArray);
-        $slug = $groupSlug.'_'.$invite->generateRandomString();
-        return $slug;
+        $slug = strtolower($groupSlug.'_'.$invite->generateRandomString());
+        //get the max number for the forloop
+        // $max = Group::count();
+        // $maxValues = [];
+        // for($i = 1; $i <= $max; $i++){
+        //     $maxValues = Group::pluck('slog_link')->toArray();
+        // } 
+        $check = Group::where('slog_link', $slug)->exists();
+        if(!$check){
+            return $slug;
+        }else{
+            createGroupLink($groupName);
+        }
+        
+        // get the list of names in an array
+        // chck or run slug again
+        // return $slug;
     }
     /**
      * Display the specified resource.

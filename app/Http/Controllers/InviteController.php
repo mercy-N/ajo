@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Invite;
 use App\User;
+use App\Group;
 use Illuminate\Http\Request;
 use URL;
 use App\Referral;
@@ -94,9 +95,40 @@ class InviteController extends Controller
         return redirect('/home');
 
     }
+    
     // to join the app
+    /**
+     * 
+     * Group invite
+     * Sends a link to invite you to the group
+     * 
+     * @param \App\Group::id, Request->phone
+     */
+    public function inviteGroup(Request $request)
+    {       
+        //updates the invite table
+        // -- groupid
+        // -- group slug
+        // -- group name 
+        // -- user id
+        // -- user name 
+        // -- invitee phone number
+        $group = Group::findOrFail($request->group);
+        $invite = new Invite;
+        $invite->user_id = auth()->user()->id;
+        $invite->group_id = $request->group;
+        $invite->phone = $request->phone;
+        $invite->url = $group->slog_link;
+        $invite->status = 'sent';
+        if($invite->save()){
+            return 'true';
+        }
+        else{
+            return 'false';
+        }
+        //sends an email/sms to the phone number
 
-
+    }
     /**
      * Show the form for creating a new resource.
      *
