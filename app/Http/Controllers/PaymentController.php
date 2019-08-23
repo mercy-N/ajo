@@ -59,6 +59,7 @@ class PaymentController extends Controller
     }
     public function chargeCard($cus){
         // config()
+
         $result = array();
         $charge = DB::table('authorization')->where('id', $cus)->first();
         // dd($charge);
