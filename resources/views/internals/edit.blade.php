@@ -13,8 +13,8 @@
 
                 <input id="phone_number"
                 type="text"
-                class="form-control{{ $errors->has('phone_number')?'is-invalid':'' }} "
-                name="phone_number"
+                class="form-control{{ $errors->has('phone')?'is-invalid':'' }} "
+                name="phone"
                 value="{{auth()->user()->phone}}">
 
                 @if($errors->has('phone_number'))
@@ -44,7 +44,7 @@
                 <label for="email" class="col-md-4 col-form-label">Email</label>
 
                 <input type="email" name="email" class="form-control"
-                value="{{auth()->user()->email}}">
+                value="{{auth()->user()->email}}" disabled="">
             </div>
 
             <div class="row">

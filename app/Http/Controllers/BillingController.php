@@ -83,3 +83,10 @@ class BillingController extends Controller
         //
     }
 }
+    //charge everyone in a group at the end of the month
+    //charge only groups that are complete
+    //exclude user whose order number is equal to the current cycle
+    //charge with the amount on the row
+    //..every 25th change everyones ..
+    //..change status of billing records when user has been billed
+    //..users left on the record will be continually charged.. and mails sent

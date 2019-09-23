@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Request;
+use App\Transaction;
 
 class User extends Authenticatable
 {
@@ -17,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'image', 'phone'
         // 'phone', 'verification_code',
     ];
 
@@ -67,4 +68,8 @@ class User extends Authenticatable
         return $this->hasMany(Request::class, 'sender');
     }
 
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class);
+    }
 }

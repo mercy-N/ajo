@@ -26,8 +26,9 @@ class HomeController extends Controller
     {
         $user = User::find(auth()->user()->id);
         $groups = $user->group()->get();
+        $transactions = $user->transaction()->get();
 
-        return view('home')->with('groups', $groups);
+        return view('home')->with(['groups' => $groups, 'transactions' => $transactions, 'user' => $user]);
 
     }
     public function getGroupUsers($groupId)

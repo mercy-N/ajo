@@ -28,7 +28,7 @@ Route::post('/register', 'PhoneController@store')->name('register.store');
 // route for profile
 Route::get('/account', 'AccountController@index')->name('account');
 Route::get('/edit', 'AccountController@show')->name('edit');
-Route::post('/edit', 'AccountController@update')->name('update');
+Route::post('/edit', 'ProfileController@update')->name('update');
 
 // route to groups
 Route::get('/groups', 'GroupController@index')->name('groups');
@@ -64,6 +64,7 @@ Route::get('/payment/callback', 'PaymentController@handleGatewayCallback');
 
 // transaction route
 Route::get('/transaction', 'TransactionController@index')->name('transaction');
+Route::get('/transactions', 'TransactionController@view')->name('transactions');
 
 // ajax
 Route::get('/get-group/{groupId}', 'HomeController@getGroupUsers');

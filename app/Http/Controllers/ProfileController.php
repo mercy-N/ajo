@@ -7,6 +7,8 @@ use Auth;
 use App\Phone;
 use App\Profile;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
+use Illuminate\Http\UploadedFile;
 
 class ProfileController extends Controller
 {
@@ -15,6 +17,7 @@ class ProfileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index($phone_number)
     {
         if(Auth::check()){
@@ -39,7 +42,7 @@ public function info(Request $request)
         'bvn' => 'required|numeric|unique:users',
         'email' => 'email|unique:users|required',
         'phone_number' => 'required|string|unique:users,phone|max:120',
-        'password' => 'required|string|max:120|confirmed',
+        'password' => 'required|string|max:120|min:6|confirmed',
     ]);
     $user = new User;
     $user->firstname = $request->firstname;
@@ -120,7 +123,33 @@ public function info(Request $request)
      */
     public function update(Request $request, Profile $profile)
     {
-        //
+        $user = auth()->user();
+        $currentPhoto = $user->image;
+
+        $data = request()->validate([
+            'phone' => 'required|string|unique:users,phone|max:120',
+        ]);
+
+        // $name = time().'.'.explode('/', explode(':', substr($request->image, 0, strpos($request->image, ';')))[1])[1];
+        if($request->hasFile('image')){
+             $name = $user->id.'.jpg';
+
+            \Image::make($request->image)->save(public_path('img/profile/'.$name));
+
+            $request->merge(['image' => $user->id.'.jpg']);
+            $userPhoto = public_path('img/profile/'.$currentPhoto);
+
+            if(file_exists($userPhoto)) {
+                @unlink($userPhoto);
+            }
+        }
+
+        if($user->update($request->all())){
+
+            echo 'success';
+        }else{
+            echo 'you are looking good';
+        }
     }
 
     /**

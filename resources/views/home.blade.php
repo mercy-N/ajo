@@ -7,8 +7,8 @@
         <div class="col-md-3">
             <div class="row">
         <div class="col-3 pb-5">
-            <img src="https://pbs.twimg.com/profile_images/1093864970335514625/N2rRQMQE_400x400.jpg" class="rounded-circle" style="max-height: 80px;"><br>
-             <!-- Welcome, {{auth()->user()->firstname}}. -->
+            <img src="{{$user->image}}" class="rounded-circle" style="max-height: 80px;"><br>
+
         </div>
         </div>
         <div class="row">
@@ -23,7 +23,7 @@
         </div>
         <div class="row">
             <div class="col-3 pb-3">
-                <a href="">Transactions</a>
+                <a href=" {{ route('transactions')}} ">Transactions</a>
             </div>
         </div>
         <div class="row">
@@ -99,6 +99,9 @@
                                         <a class="dropdown-item" href="#">group 4</a>
                                       </div>
                                 </div>
+                                @foreach ($transactions as $transaction)
+                                  <p class="card-text"> {{ $transaction->amount}} {{ $transaction->type}} {{ $transaction->created_at }} </p>
+                                @endforeach
                                 <p class="card-text" style="color:red;">View more</p>
                         </div>
                     </div>

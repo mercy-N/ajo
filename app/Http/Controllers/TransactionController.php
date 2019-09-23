@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Transaction;
 use Illuminate\Http\Request;
 use Unicodeveloper\Paystack\Paystack;
@@ -17,6 +18,14 @@ class TransactionController extends Controller
         $token = $this->getHashedToken();
 
         return view('transaction.pay')->with('transRef', $token);
+    }
+
+    public function view()
+    {
+        $user = auth()->user();
+         $transactions = $user->transaction()->get();
+
+        return view('transaction.transactions')->with('transactions', $transactions);
     }
 
     /**
@@ -37,9 +46,23 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
+    public static function storeTrans($details, $type, $group_id)
+    {
+      $trans = new Transaction;
+
+        $trans->user_id = auth()->user()->id;
+        $trans->group_id = 0;
+        $trans->reference = $details['data']['reference'];
+        $trans->status = $details['status'];
+        $trans->amount = $details['data']['amount'];
+        $trans->type = $type;
+        $trans->save();
+
+
+    }
     /**
      * Display the specified resource.
      *

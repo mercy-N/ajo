@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use App\Transaction;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Unicodeveloper\Paystack\Paystack;
@@ -33,6 +34,7 @@ class PaymentController extends Controller
 
         // dd($paymentDetails['data']['authorization']);
         $this->storeAuth($paymentDetails['data']['authorization']);
+        TransactionController::storeTrans($paymentDetails, 'card added', 0);
         // Now you have the payment details,
         // you can store the authorization_code in your db to allow for recurrent subscriptions
         // you can then redirect or do whatever you want
@@ -57,6 +59,8 @@ class PaymentController extends Controller
         ]);
 
     }
+
+
     public function chargeCard($cus){
         // config()
 
